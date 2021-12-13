@@ -16,11 +16,12 @@ def login_user(request):
             login(request, user)
             request.session['user_id'] = user.id
             request.session['user_email'] = user.email
-            return redirect('home')
+            return redirect("base:home")
         else:
-            messages.warning(request, 'Your username and password is invalid.')
+            messages.warning(request, 'Your username and password is invalid')
+
     context = {}
-    return render(request, 'accounts/login.html', context)
+    return render(request, 'accounts/log-in.html', context)
 
 
 def create_user(request):
@@ -56,4 +57,8 @@ def create_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('user:login')
+    return redirect('base:login')
+
+
+def home(request):
+    return render(request, 'home/home.html')
