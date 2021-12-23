@@ -26,8 +26,10 @@
                     <button class="w-100 btn btn-lg border-0 mb-3" type="submit"
                             style="background-color: #00EAC2">Sign in
                     </button>
+                    <p ><a href="{% url 'base:password-reset' %}" style="color: #00EAC2">Forgot Password?</a></p>
 
-                    <p>Create new account sign up <a href="{% url 'base:register' %}" style="color: #00EAC2">here</a></p>
+                    <p>Create new account sign up <a href="{% url 'base:register' %}" style="color: #00EAC2">here</a>
+                    </p>
                     <hr class="my-4">
                     <small class="text-muted">By clicking Sign up, you agree to the terms of use.</small>
                 </form>

@@ -15,6 +15,10 @@ from base.forms import NewUserForm
 from base.models import CustomUser
 
 
+def home(request):
+    return render(request, 'home/home.html')
+
+
 def login_user(request):
     if request.method == 'POST':
         email = request.POST['email']
@@ -67,10 +71,6 @@ def create_user(request):
 def logout_user(request):
     logout(request)
     return redirect('base:login')
-
-
-def home(request):
-    return render(request, 'home/home.html')
 
 
 def password_reset_request(request):
