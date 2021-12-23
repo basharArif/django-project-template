@@ -10,7 +10,7 @@ class NewUserForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ('email', 'user_type', 'first_name', 'last_name', 'password1', 'password2')
+        fields = ['email', 'profile_picture','first_name', 'last_name', 'password1', 'password2', 'user_type' ]
         widgets = {
             'password1': forms.PasswordInput(attrs={'placeholder': 'Enter your Password', 'class': 'form-control'}),
             'password2': forms.PasswordInput(attrs={'placeholder': 'Repeat your password', 'class': 'form-control'}),

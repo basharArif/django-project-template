@@ -36,13 +36,7 @@
                         {% render_field field class="form-control is-valid" %}
                     {% endif %}
                 {% else %}
-
-                    {% if field.html_name == "text-area" %}
-                        {% render_field field rows="1" class="form-control mb-4" %}
-                    {% else %}
                         {% render_field field class="form-control  form-control-lg mb-4" %}
-
-                    {% endif %}
 
                 {% endif %}
 

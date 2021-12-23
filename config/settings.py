@@ -20,7 +20,6 @@ INSTALLED_APPS = [
     # 3rd Party
     'widget_tweaks',
 
-
     # Apps
     'base.apps.BaseConfig'
 ]
@@ -94,11 +93,14 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 
-MEDIA_ROOT = 'media'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 if DEBUG is False:
     CSRF_COOKIE_SECURE = True
@@ -114,3 +116,22 @@ if DEBUG is False:
     SESSION_COOKIE_SECURE = True
     # SECURE_HSTS_PRELOAD = True
     X_FRAME_OPTIONS = 'DENY'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'sql.log',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}

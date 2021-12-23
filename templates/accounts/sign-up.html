@@ -1,12 +1,16 @@
 {% extends 'layouts/base.html' %}
 {% block content %}
-    <div class="container">
+    <div class="container mt-3">
         <div class="row">
-            <div class="col-6 d-flex justify-content-center">
-                <form class="p-4 p-md-5 border rounded-3 bg-light" method="POST">
+            <h2 class="ms-4">Create account</h2>
+            <div class="d-flex justify-content-center">
+
+                <form class="p-4 rounded-3" action="" enctype="multipart/form-data"
+                      method="POST">
                     {% csrf_token %}
-                    {% include 'includes/form.html' with form=form row=1 %}
-                    <button type="submit">Sign Up</button>
+                    {% include 'includes/form.html' with form=form row=2 %}
+                    <button class="btn btn-primary" type="submit">Sign Up</button>
+
                 </form>
             </div>
         </div>

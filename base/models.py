@@ -31,12 +31,19 @@ class Website(models.Model):
 
 
 class CustomUser(AbstractUser):
+    CREATOR = _('Creator')
+    SUBSCRIBER = _('SUBSCRIBER')
+
+    ROLE_CHOICES = (
+        (CREATOR, 'Creator'),
+        (SUBSCRIBER, 'Subscriber')
+    )
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    profile_picture = models.ImageField(null=True, upload_to='user/images/')
+    profile_picture = models.ImageField(default='user/images/fce502bf-2e2a-49b2-bcda-e4bfb4ef7c02.jpeg', null=True,
+                                        upload_to='user/images/')
 
-    is_operator = models.BooleanField(default=False)
-    is_accountant = models.BooleanField(default=False)
+    role = models.CharField(max_length=30, choices=ROLE_CHOICES)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -57,8 +64,7 @@ class CustomUser(AbstractUser):
     @property
     def image_preview(self):
         if self.profile_picture:
-            return mark_safe('<img src="{}" width="100" height="60"'.format(self.profile_picture.url))
-        return ""
+            return mark_safe(f'<img src="{self.profile_picture.url}" width="100" height="60">')
 
     @property
     def image_url(self):

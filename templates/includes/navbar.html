@@ -1,36 +1,49 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-lg border-bottom">
+<nav class="navbar navbar-expand-lg navbar-light border-bottom">
     <div class="container">
-        <a class="navbar-brand" href="#">Navbar</a>
+        <a class="navbar-brand" href="">Authentication</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent"
                 aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 ">
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="#">Home</a>
                 </li>
-
-
             </ul>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                   data-bs-toggle="dropdown" aria-expanded="false">
-                    {{ user.get_full_name }}
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    {% if not user.is_authenticated %}
+            <li class="nav-item dropdown" style="list-style-type: none">
+                {% if user.is_authenticated %}
 
-                        <li><a class="dropdown-item" href="{% url 'base:register' %}">Sign Up</a></li>
-                    {% else %}
-                        <li><a class="dropdown-item" href="">View Profile</a></li>
+                    {#                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"#}
+                    {#                       data-bs-toggle="dropdown" aria-expanded="false">#}
+                    {#                        <img class="rounded-circle" src="{{ user.image_url }}" width="20" height="20"#}
+                    {#                             alt="{{ user.first_name }}">#}
+                    {#                    </a>#}
+                    {#                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">#}
+                    {##}
+
+                    {##}
+                    {#                    </ul>#}
+
+                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
+                       aria-expanded="false">
+                        <img class="rounded-circle"
+                             src="{{ user.image_url }}" width="20"
+                             height="20"
+                             alt="{{ user.first_name }}">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+
                         <li><a class="dropdown-item" href="{% url 'base:logout' %}">Log Out</a></li>
+                    </ul>
 
-                    {% endif %}
+                {% else %}
+                    <a class="btn border " href="{% url 'base:register' %}">Sign Up</a>
 
+                    <a class="btn" href="{% url 'base:login' %}" style="background-color: #00EAC2">Log In</a>
+                {% endif %}
 
-                </ul>
             </li>
 
         </div>
