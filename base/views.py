@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.forms import PasswordResetForm, AuthenticationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db.models import Q
@@ -16,7 +16,15 @@ from base.models import CustomUser
 
 
 def home(request):
-    return render(request, 'home/home.html')
+    context = {
+        'user': request.user
+    }
+    print(request.user)
+    return render(request, 'home/home.html', context)
+
+
+def user_profile(request):
+    return render(request, 'home/profile.html')
 
 
 def login_user(request):
@@ -31,9 +39,11 @@ def login_user(request):
             request.session['user_email'] = user.email
             return redirect('base:home')
         else:
-            messages.warning(request, 'Your username and password is invalid')
+            messages.warning(request, 'Your username or password is invalid')
 
-    context = {}
+    context = {
+        'form': AuthenticationForm()
+    }
     return render(request, 'accounts/log-in.html', context)
 
 

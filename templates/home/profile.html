@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+{% block content %}
+    {% if request.user.is_authenticated %}
+        <div class="container mt-3">
+
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-around align-items-center">
+                                <img src="{{ user.image_url }}" alt="Admin"
+                                     class="rounded-circle" width="150">
+                                <div class="mt-3">
+                                    <p></p>
+                                    <h4>{{ user.get_full_name }}</h4>
+                                    <p>{{ user.email }}</p>
+                                </div>
+                                <div>
+                                    <button class="btn" style="background-color: #00EAC2">Change Password</button>
+                                    <button class="btn" style="background-color: #00EAC2">Edit Info</button>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    {% else %}
+        <div class="container mt-3">
+            <p>You are not logged in. To view resource you have to <a href="{% url 'base:login' %}">login</a></p>
+        </div>
+
+
+    {% endif %}
+{% endblock %}

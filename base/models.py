@@ -70,3 +70,12 @@ class CustomUser(AbstractUser):
     def image_url(self):
         if self.profile_picture and hasattr(self.profile_picture, 'url'):
             return self.profile_picture.url
+
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    images = models.ImageField(upload_to='user/images')
+    email = models.EmailField(blank=True)
+
+    def __str__(self):
+        return self.email
