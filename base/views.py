@@ -23,7 +23,7 @@ def home(request):
     return render(request, 'home/home.html', context)
 
 
-def user_profile(request):
+def user_profile(request, name):
     return render(request, 'home/profile.html')
 
 
