@@ -1,0 +1,19 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}
+    Edit Profile
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-3">
+        <h1 class="h4" style="color: #00EAC2">Update Profile</h1>
+        <div class="row">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% include 'includes/form.html' with form=user_form %}
+                {% include 'includes/form.html' with form=user_profile_form %}
+                <button class="btn" type="submit" style="background-color: #00EAC2">Edit</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

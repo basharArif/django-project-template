@@ -40,8 +40,6 @@ class CustomUser(AbstractUser):
     )
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    profile_picture = models.ImageField(default='user/images/fce502bf-2e2a-49b2-bcda-e4bfb4ef7c02.jpeg', null=True,
-                                        upload_to='user/images/')
 
     role = models.CharField(max_length=30, choices=ROLE_CHOICES)
 
@@ -61,6 +59,12 @@ class CustomUser(AbstractUser):
     def get_full_name(self):
         return f'{self.first_name} {self.last_name}'
 
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    profile_picture = models.ImageField(default='user/images/fce502bf-2e2a-49b2-bcda-e4bfb4ef7c02.jpeg', null=True,
+                                        upload_to='user/images/')
+
     @property
     def image_preview(self):
         if self.profile_picture:
@@ -70,12 +74,3 @@ class CustomUser(AbstractUser):
     def image_url(self):
         if self.profile_picture and hasattr(self.profile_picture, 'url'):
             return self.profile_picture.url
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-    images = models.ImageField(upload_to='user/images')
-    email = models.EmailField(blank=True)
-
-    def __str__(self):
-        return self.email

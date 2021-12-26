@@ -9,7 +9,8 @@ app_name = 'base'
 
 urlpatterns = [
     path('', views.home, name="home"),
-    path('profile/<slug:name>', views.user_profile, name='profile'),
+    path('profile/', views.profile, name='profile'),
+    path('profile/edit/', views.update_user_profile, name='update-profile'),
     path('register/', views.create_user, name="register"),
     path('login/', views.login_user, name="login"),
     path('logout/', views.logout_user, name="logout"),
@@ -24,7 +25,9 @@ urlpatterns = [
     path('password_reset', views.password_reset_request, name='password-reset'),
     path('password_change', auth_views.PasswordChangeView.as_view(template_name="accounts/password_change.html"),
          name="password-change"),
-    # path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(t))
+    path('password_change/done/',
+         auth_views.PasswordChangeDoneView.as_view(template_name="accounts/password_change_complete.html"),
+         name="password-change-done")
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

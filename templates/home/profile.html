@@ -1,37 +1,40 @@
 {% extends 'layouts/base.html' %}
+{% block title %}
+    User Profile
+{% endblock %}
 {% block content %}
+
     {% if request.user.is_authenticated %}
         <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-success">
+                    <a class="close" href="#" data-dismiss="alert">×</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
 
-            <div class="row">
-
-
-
-                            <div class="col-md-4 col-sm-6">
-                                <img src="{{ user.image_url }}" alt="Admin"
-                                     class="rounded-circle" width="150">
-                            </div>
-                            <div class="col-md-4 col-sm-6">
-                                <p></p>
-                                <h4>{{ user.get_full_name }}</h4>
-                                <p>{{ user.email }}</p>
-                            </div>
-                            <div class="col-md-4 col-sm-6">
-                                <a class="btn" style="background-color: #00EAC2"
-                                   href="{% url 'base:password-change' %}">Change Password
-                                </a>
-                                <button class="btn" style="background-color: #00EAC2">Edit Info</button>
-
-                            </div>
-
+            <div class="d-flex justify-content-center align-items-center">
+                <div class="col-md-4 col-sm-6">
+                    <img src="{{ profile.image_url }}" alt="Admin"
+                         class="rounded-circle" width="150">
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <p></p>
+                    <h4>{{ profile.user.get_full_name }}</h4>
+                    <p>{{ profile.user.email }}</p>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <a class="btn me-2" style="background-color: #00EAC2"
+                       href="{% url 'base:password-change' %}">Change Password
+                    </a>
+                    <a class="btn" style="background-color: #00EAC2" href="{% url 'base:update-profile' %}">Edit
+                        Info</a>
+                </div>
             </div>
-
         </div>
     {% else %}
         <div class="container mt-3">
             <p>You are not logged in. To view resource you have to <a href="{% url 'base:login' %}">login</a></p>
         </div>
-
-
     {% endif %}
 {% endblock %}

@@ -1,9 +1,12 @@
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-=6inv$xvyl8-z*sz5y9mc6_0e5=%ov9+ee_ccm_#0rs5bpf4ks'
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 DEBUG = True
 
@@ -36,6 +39,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 AUTH_USER_MODEL = 'base.CustomUser'
+LOGIN_URL = 'login/'
 
 TEMPLATES = [
     {
@@ -94,7 +98,6 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 MEDIA_URL = '/media/'
-
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

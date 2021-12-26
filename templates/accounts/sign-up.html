@@ -1,19 +1,28 @@
 {% extends 'layouts/base.html' %}
+
+{% block title %}
+    Sign Up
+{% endblock %}
+
 {% block content %}
     <div class="container mt-3">
         <div class="row">
-            <h2 class="ms-4">Create account</h2>
-            <div class="d-flex justify-content-center">
-
-                <form class="p-4 rounded-3" action="" enctype="multipart/form-data"
+            <h1 class="h3 mb-2" style="color: #00EAC2">Create account</h1>
+            <hr>
+            <div class="col-md-6 col-sm-6">
+                <form class="rounded-3" action="" enctype="multipart/form-data"
                       method="POST">
                     {% csrf_token %}
-                    {% include 'includes/form.html' with form=form row=2 %}
+                    {% include 'includes/form.html' with form=form row=1 %}
                     <button class="btn" type="submit" style="background-color: #00EAC2">Sign Up</button>
-                    <p class="mt-3">Already hae and account please <a href="{% url 'base:login' %}" style="color: #00EAC2">login</a></p>
-
+                    <p class="mt-3">Already hae and account please <a href="{% url 'base:login' %}"
+                                                                      style="color: #00EAC2">login</a></p>
                 </form>
             </div>
+            <div class="col-md-6 col-sm-12 d-flex justify-content-center">
+                <img src="/static/assets/img/sign-up.svg" alt="sign-up" width="500">
+            </div>
+
         </div>
     </div>
 {% endblock %}

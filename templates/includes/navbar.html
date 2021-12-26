@@ -18,12 +18,12 @@
                     <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button"
                        aria-expanded="false">
                         <img class="rounded-circle"
-                             src="{{ user.image_url }}" width="20"
+                             src="{{ user.userprofile.image_url }}" width="20"
                              height="20"
                              alt="{{ user.first_name }}">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{% url 'base:profile' user.first_name %}">View
+                        <li><a class="dropdown-item" href="{% url 'base:profile' %}">View
                             Profile</a>
                         </li>
 

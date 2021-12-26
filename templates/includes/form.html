@@ -11,9 +11,20 @@
             {{ error }}
         {% endfor %}
     </div>
+
 {% endif %}
+
+{% for message in messages %}
+    <div class="alert alert-success">
+        <a class="close" href="#" data-dismiss="alert">×</a>
+        {{ message }}
+    </div>
+{% endfor %}
 <div class="row">
     {% for field in form.visible_fields %}
+        {% for message in messages %}
+
+        {% endfor %}
         <div class="
             {% if row == 1 %}col-12
              {% elif row == 3 %} col-sm-6
@@ -36,7 +47,7 @@
                         {% render_field field class="form-control is-valid" %}
                     {% endif %}
                 {% else %}
-                        {% render_field field class="form-control  form-control-lg mb-4" %}
+                    {% render_field field class="form-control  form-control-lg mb-4" %}
 
                 {% endif %}
 

@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordResetForm, AuthenticationForm
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
@@ -11,10 +12,11 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from base import constant
-from base.forms import NewUserForm
+from base.forms import NewUserForm, UpdateUserForm, UpdateUserProfileForm
 from base.models import CustomUser
 
 
+@login_required
 def home(request):
     context = {
         'user': request.user
@@ -23,6 +25,7 @@ def home(request):
     return render(request, 'home/home.html', context)
 
 
+@login_required
 def user_profile(request, name):
     return render(request, 'home/profile.html')
 
@@ -112,3 +115,33 @@ def password_reset_request(request):
     password_reset_form = PasswordResetForm()
     return render(request=request, template_name="accounts/reset-password.html",
                   context={"password_reset_form": password_reset_form})
+
+
+def update_user_profile(request):
+    if request.method == 'POST':
+        user_form = UpdateUserForm(request.POST, instance=request.user)
+        user_profile_form = UpdateUserProfileForm(request.POST, request.FILES, instance=request.user.userprofile)
+
+        if user_form.is_valid() and user_profile_form.is_valid():
+            user_form.save()
+            user_profile_form.save()
+
+            messages.success(request, 'Your profile is updated successfully')
+            return redirect('base:profile')
+    else:
+        user_form = UpdateUserForm(instance=request.user)
+        user_profile_form = UpdateUserProfileForm(instance=request.user.userprofile)
+
+    context = {
+        'user_form': user_form,
+        'user_profile_form': user_profile_form
+    }
+
+    return render(request, 'home/edit_profile.html', context)
+
+
+def profile(request):
+    context = {
+        'profile': request.user.userprofile
+    }
+    return render(request, 'home/profile.html', context)
