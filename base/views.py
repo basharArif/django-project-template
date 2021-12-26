@@ -18,11 +18,7 @@ from base.models import CustomUser
 
 @login_required
 def home(request):
-    context = {
-        'user': request.user
-    }
-    print(request.user)
-    return render(request, 'home/home.html', context)
+    return render(request, 'home/home.html')
 
 
 @login_required
