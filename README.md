@@ -1,5 +1,5 @@
 # django-project-template
-Django project tempalet with basic authentication
+Django project template with basic authentication
 
 ## Setup Django
 
