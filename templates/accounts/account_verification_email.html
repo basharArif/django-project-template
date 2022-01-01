@@ -1,0 +1,11 @@
+{% autoescape off %}
+
+    Hello {{ user.name }}
+
+    You registered an account on [customer portal], before being able to use your account you need to verify that this is your email address by clicking below link:
+
+    {{ protocol }}://{{ domain }}{% url 'base:account-verification' uidb64=uid token=token %}
+
+    Bashar Arif, Privateye
+
+{% endautoescape %}

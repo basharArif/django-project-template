@@ -27,7 +27,8 @@ urlpatterns = [
          name="password-change"),
     path('password_change/done/',
          auth_views.PasswordChangeDoneView.as_view(template_name="accounts/password_change_complete.html"),
-         name="password-change-done")
+         name="password-change-done"),
+    path('verification/message', views.user_verification_request, name='user-verification-request'),
+    path('verification/<uidb64>/<token>', views.user_verification, name='account-verification'),
 ]
-
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

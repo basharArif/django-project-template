@@ -1,17 +1,18 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordResetForm, AuthenticationForm
 from django.contrib.auth.tokens import default_token_generator
-from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import BadHeaderError, HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
-from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 
 from base import constant
+from base.email import send_password_reset_email, send_account_verify_email
 from base.forms import NewUserForm, UpdateUserForm, UpdateUserProfileForm
 from base.models import CustomUser
 
@@ -33,9 +34,12 @@ def login_user(request):
         user = authenticate(request, email=email, password=password)
 
         if user is not None:
-            login(request, user)
-            request.session['user_id'] = user.id
-            request.session['user_email'] = user.email
+            if not user.is_verified:
+                messages.warning(request, 'Your account is not verified. Check your email to verify your account.')
+            else:
+                login(request, user)
+                request.session['user_id'] = user.id
+                request.session['user_email'] = user.email
             return redirect('base:home')
         else:
             messages.warning(request, 'Your username or password is invalid')
@@ -51,8 +55,6 @@ def create_user(request):
         form = NewUserForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
-            email = form.cleaned_data.get('email')
-            password = form.cleaned_data.get('password1')
             user_type = form.cleaned_data.get('user_type')
 
             if user_type == str(constant.OPERATOR):
@@ -62,12 +64,20 @@ def create_user(request):
                 user.is_accountant = True
             user.save()
 
-            user = authenticate(request, email=email, password=password)
-            login(request, user)
-            request.session['user_id'] = user.id
-            request.session['user_email'] = user.email
-
-            return redirect("base:home")
+            current_site = get_current_site(request)
+            message = {
+                "email": user.email,
+                'domain': current_site.domain,
+                'site_name': 'Website',
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+                'protocol': 'http',
+            }
+            try:
+                send_account_verify_email(user.email, message)
+            except BadHeaderError:
+                return HttpResponse('Invalid header found.')
+            return redirect('base:user-verification-request')
         else:
             messages.warning(request, 'Your username or password is invalid')
     else:
@@ -75,6 +85,26 @@ def create_user(request):
 
     context = {'form': form}
     return render(request, 'accounts/sign-up.html', context)
+
+
+def user_verification_request(request):
+    return render(request, 'accounts/account_verification_request.html')
+
+
+def user_verification(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = CustomUser.objects.get(id=uid)
+    except ObjectDoesNotExist:
+        user = None
+
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_verified = True
+        user.save()
+    else:
+        return HttpResponse('Verification link is invalid!')
+    context = {}
+    return render(request, 'accounts/account_verification_completed.html', context)
 
 
 def logout_user(request):
@@ -90,21 +120,18 @@ def password_reset_request(request):
             associated_user = CustomUser.objects.filter(Q(email=data))
             if associated_user.exists():
                 for user in associated_user:
-                    subject = 'Password Reset Request'
-                    email_template_name = 'accounts/password_reset_email.txt'
-                    c = {
+                    current_site = get_current_site(request)
+                    message = {
                         "email": user.email,
-                        'domain': '127.0.0.1:8000',
+                        'domain': current_site.domain,
                         'site_name': 'Website',
                         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                         'token': default_token_generator.make_token(user),
                         'protocol': 'http',
                     }
-                    email = render_to_string(email_template_name, c)
                     try:
-                        send_mail(subject, email, 'admin@example.com', [user.email], fail_silently=False)
+                        send_password_reset_email(user.email, message)
                     except BadHeaderError:
-
                         return HttpResponse('Invalid header found.')
                     messages.success(request, 'A message with reset password instructions has been sent to your inbox.')
                     return redirect("base:password-reset-done")
@@ -132,7 +159,6 @@ def update_user_profile(request):
         'user_form': user_form,
         'user_profile_form': user_profile_form
     }
-
     return render(request, 'home/edit_profile.html', context)
 
 

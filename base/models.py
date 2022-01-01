@@ -40,8 +40,10 @@ class CustomUser(AbstractUser):
     )
     username = None
     email = models.EmailField(_('email address'), unique=True)
-
     role = models.CharField(max_length=30, choices=ROLE_CHOICES)
+    is_verified = models.BooleanField(default=False, help_text=_('User is verified or not'))
+    is_active = models.BooleanField(default=True, help_text=_('User is active or not.'))
+    is_deleted = models.BooleanField(default=False, help_text=_('User is deleted or not.'))
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

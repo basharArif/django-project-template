@@ -1,0 +1,15 @@
+{% extends "layouts/base.html" %}
+{% block title %}
+    Account verification completed.
+{% endblock %}
+
+{% block content %}
+
+    <div class="container mt-3">
+        <h1 class="h3">Account has been verified.</h1>
+        <hr>
+        <p>Thank you for your email confirmation. Now you can login to your account</p>
+        <a href="{% url 'base:login' %}" class="btn btn-primary">Log in</a>
+    </div>
+
+{% endblock %}
