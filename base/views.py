@@ -1,7 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordResetForm, AuthenticationForm
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import BadHeaderError, HttpResponse
@@ -35,7 +34,13 @@ def login_user(request):
 
         if user is not None:
             if not user.is_verified:
-                messages.warning(request, 'Your account is not verified. Check your email to verify your account.')
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                token = default_token_generator.make_token(user)
+                user_email = user.email
+                request.session['uid'] = uid
+                request.session['token'] = token
+                request.session['user_email'] = user_email
+                messages.warning(request, 'Your account is not verified yet. Check email to verify your account or')
             else:
                 login(request, user)
                 request.session['user_id'] = user.id
@@ -64,17 +69,11 @@ def create_user(request):
                 user.is_accountant = True
             user.save()
 
-            current_site = get_current_site(request)
-            message = {
-                "email": user.email,
-                'domain': current_site.domain,
-                'site_name': 'Website',
-                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
-                'protocol': 'http',
-            }
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+
             try:
-                send_account_verify_email(user.email, message)
+                send_account_verify_email(request, user.email, uid, token)
             except BadHeaderError:
                 return HttpResponse('Invalid header found.')
             return redirect('base:user-verification-request')
@@ -89,6 +88,19 @@ def create_user(request):
 
 def user_verification_request(request):
     return render(request, 'accounts/account_verification_request.html')
+
+
+def resend_user_verification(request):
+    uid = request.session['uid']
+    token = request.session['token']
+    user_email = request.session['user_email']
+    print(uid, token, user_email)
+
+    try:
+        send_account_verify_email(request, user_email, uid, token)
+    except BadHeaderError:
+        return HttpResponse('Invalid header found.')
+    return redirect('base:user-verification-request')
 
 
 def user_verification(request, uidb64, token):
@@ -120,17 +132,10 @@ def password_reset_request(request):
             associated_user = CustomUser.objects.filter(Q(email=data))
             if associated_user.exists():
                 for user in associated_user:
-                    current_site = get_current_site(request)
-                    message = {
-                        "email": user.email,
-                        'domain': current_site.domain,
-                        'site_name': 'Website',
-                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                        'token': default_token_generator.make_token(user),
-                        'protocol': 'http',
-                    }
+                    uid = urlsafe_base64_encode(force_bytes(user.pk))
+                    token = default_token_generator.make_token(user)
                     try:
-                        send_password_reset_email(user.email, message)
+                        send_password_reset_email(request, user.email, uid, token)
                     except BadHeaderError:
                         return HttpResponse('Invalid header found.')
                     messages.success(request, 'A message with reset password instructions has been sent to your inbox.')

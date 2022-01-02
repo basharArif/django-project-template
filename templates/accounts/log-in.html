@@ -13,6 +13,9 @@
                     <div class="alert alert-success">
                         <a class="close" href="#" data-dismiss="alert">×</a>
                         {{ message }}
+                        {% if message.tags == 'warning' %}
+                            <a class="" href="{% url 'base:resend-verification' %}">Resend email.</a>
+                        {% endif %}
                     </div>
                 {% endfor %}
 

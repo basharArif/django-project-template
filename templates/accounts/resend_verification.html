@@ -1,0 +1,15 @@
+{% extends "layouts/base.html" %}
+{% block title %}
+    Your account is not verified.
+{% endblock %}
+
+{% block content %}
+
+    <div class="container mt-3">
+        <h1 class="h3">Account Verification warning!</h1>
+        <hr>
+        <p>Check email to verify your account.</p>
+        <a href="{% url 'base:login' %}" class="btn btn-primary">Resend</a>
+    </div>
+
+{% endblock %}

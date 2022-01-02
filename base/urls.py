@@ -30,5 +30,6 @@ urlpatterns = [
          name="password-change-done"),
     path('verification/message', views.user_verification_request, name='user-verification-request'),
     path('verification/<uidb64>/<token>', views.user_verification, name='account-verification'),
+    path('verification/resend', views.resend_user_verification, name='resend-verification'),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
